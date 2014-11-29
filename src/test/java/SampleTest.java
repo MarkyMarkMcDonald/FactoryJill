@@ -3,6 +3,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
+import java.util.function.Function;
 
 import static lib.FactoryJill.build;
 import static lib.FactoryJill.factory;
@@ -33,6 +37,28 @@ public class SampleTest {
         Date now = new Date();
         Car rightOffTheShelf = build("truck", ImmutableMap.of("year", now));
         assert rightOffTheShelf.getYear().equals(now);
+    }
+
+    @Test
+    public void allowDynamicProperties() throws Exception {
+        Map<String, Object> dynamicAttributes = new HashMap<>();
+
+        Function<Car, String> lambda = (Car car) -> {
+            Random random = new Random();
+            Double decision = random.nextDouble();
+            if (decision > .5) {
+                return "Low Rider";
+            } else {
+                return "High Rider";
+            }
+        };
+
+        dynamicAttributes.put("make", lambda);
+
+        Car randomFord = build("truck", dynamicAttributes);
+
+        assert randomFord.getMake().equals("Low Rider") || randomFord.getMake().equals("High Rider");
+        assert randomFord.getYearsOwned() == 5;
     }
 
     @Test
