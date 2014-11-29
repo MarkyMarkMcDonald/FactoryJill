@@ -1,5 +1,3 @@
-package lib;
-
 import java.util.Map;
 
 public class Blueprint<T> {

@@ -1,5 +1,3 @@
-package lib;
-
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.lang.reflect.Constructor;
