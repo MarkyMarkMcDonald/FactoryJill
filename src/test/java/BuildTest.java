@@ -24,7 +24,14 @@ public class BuildTest {
     }
 
     @Test
-    public void overrides_handlesMultipleTypes() throws Exception {
+    public void definedFactories_haveConfiguredProperties() throws Exception {
+        Car pickupTruck = (Car) build("truck");
+
+        assert pickupTruck.getMake().equals("ford");
+    }
+
+    @Test
+    public void overrideDefaults() throws Exception {
         Car ford = build("truck", ImmutableMap.of("make", "Ford"));
         assert ford.getMake().equals("Ford");
 
@@ -40,7 +47,7 @@ public class BuildTest {
     }
 
     @Test
-    public void overrides_canBeDynamic() throws Exception {
+    public void dynamicOverrides() throws Exception {
         Map<String, Object> dynamicAttributes = new HashMap<>();
 
         Function<Car, String> lambda = (Car car) -> {
@@ -59,12 +66,5 @@ public class BuildTest {
 
         assert randomFord.getMake().equals("Low Rider") || randomFord.getMake().equals("High Rider");
         assert randomFord.getYearsOwned() == 5;
-    }
-
-    @Test
-    public void definedFactories_haveConfiguredProperties() throws Exception {
-        Car pickupTruck = (Car) build("truck");
-
-        assert pickupTruck.getMake().equals("ford");
     }
 }
