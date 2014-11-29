@@ -17,6 +17,22 @@ public class FactoryJill {
         factories.put(alias, blueprint);
     }
 
+    public static <T> void factory(String alias, Class<T> clazz,
+                                   Map<String, Object> attributes, Map<String, String> associations) {
+        Map<String, Object> mutableAttributes = new HashMap<>(attributes);
+
+        associations.forEach((String relationship, String factoryName) -> {
+            try {
+                mutableAttributes.put(relationship, build(factoryName));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+
+        Blueprint blueprint = new Blueprint(clazz, mutableAttributes);
+        factories.put(alias, blueprint);
+    }
+
     public static Object build(String factoryName) throws Exception {
         return build(factoryName, new HashMap<>());
     }

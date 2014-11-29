@@ -12,6 +12,8 @@ public class Car {
 
     private Date year;
 
+    private Driver driver;
+
     public String getMake() {
         return make;
     }
@@ -50,5 +52,13 @@ public class Car {
 
     public void setYearsOwned(int yearsOwned) {
         this.yearsOwned = yearsOwned;
+    }
+
+    public Driver getDriver() {
+        return driver;
+    }
+
+    public void setDriver(Driver driver) {
+        this.driver = driver;
     }
 }

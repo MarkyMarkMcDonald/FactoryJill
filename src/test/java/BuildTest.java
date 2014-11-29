@@ -11,7 +11,7 @@ import java.util.function.Function;
 import static lib.FactoryJill.build;
 import static lib.FactoryJill.factory;
 
-public class SampleTest {
+public class BuildTest {
 
     @Before
     public void before() {
@@ -40,7 +40,7 @@ public class SampleTest {
     }
 
     @Test
-    public void allowDynamicProperties() throws Exception {
+    public void overrides_canBeDynamic() throws Exception {
         Map<String, Object> dynamicAttributes = new HashMap<>();
 
         Function<Car, String> lambda = (Car car) -> {
