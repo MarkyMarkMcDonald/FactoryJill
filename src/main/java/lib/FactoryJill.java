@@ -3,15 +3,31 @@ package lib;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
 
 public class FactoryJill {
 
-    public static <T> T build(Class<T> clazz, Map<String, Object>... overrides) throws Exception {
+    private static Map<String, Blueprint> factories = new HashMap<>();
+
+    public static <T> void factory(String alias, Class<T> clazz, Map<String, Object> attributes) {
+        Blueprint<T> blueprint = new Blueprint<>(clazz, attributes);
+        factories.put(alias, blueprint);
+    }
+
+    public static Object build(String alias) throws Exception {
+        return build(alias, new HashMap<>());
+    }
+
+    public static <T> T build(String factoryName, Map<String, Object>... overrides) throws Exception {
+        Blueprint<T> blueprint = factories.get(factoryName);
+        Class<T> clazz = blueprint.getClazz();
         Constructor<?> constructor = clazz.getConstructor();
         T newInstance = (T) constructor.newInstance();
+
+        blueprint.getAttributes().forEach((String property, Object value) -> {
+            overrideProperty(newInstance, property, value);
+        });
 
         for (Map<String, Object> override : overrides) {
             override.forEach((String property, Object value) -> {
@@ -46,11 +62,5 @@ public class FactoryJill {
         } else {
             throw new NotImplementedException();
         }
-    }
-
-    public static <T> Map<String, T> override(String property, T value) {
-        HashMap<String, T> propertyMap = new HashMap<>();
-        propertyMap.put(property, value);
-        return propertyMap;
     }
 }
