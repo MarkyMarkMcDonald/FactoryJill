@@ -4,14 +4,15 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class FactoryJill {
 
     private static Map<String, Blueprint> factories = new HashMap<>();
 
     public static <T> void factory(String alias, Class<T> clazz, Map<String, Object> attributes) {
-        Blueprint<T> blueprint = new Blueprint<>(clazz, attributes);
+        Blueprint blueprint = new Blueprint(clazz, attributes);
         factories.put(alias, blueprint);
     }
 
@@ -19,21 +20,15 @@ public class FactoryJill {
         return build(alias, new HashMap<>());
     }
 
-    public static <T> T build(String factoryName, Map<String, Object>... overrides) throws Exception {
+    public static <T> T build(String factoryName, Map<String, Object> overrides) throws Exception {
         Blueprint<T> blueprint = factories.get(factoryName);
         Class<T> clazz = blueprint.getClazz();
         Constructor<?> constructor = clazz.getConstructor();
         T newInstance = (T) constructor.newInstance();
 
-        blueprint.getAttributes().forEach((String property, Object value) -> {
-            overrideProperty(newInstance, property, value);
-        });
+        blueprint.getAttributes().forEach((String property, Object value) -> overrideProperty(newInstance, property, value));
 
-        for (Map<String, Object> override : overrides) {
-            override.forEach((String property, Object value) -> {
-                overrideProperty(newInstance, property, value);
-            });
-        }
+        overrides.forEach((String property, Object value) -> overrideProperty(newInstance, property, value));
 
         return newInstance;
     }
