@@ -8,8 +8,8 @@ import java.util.Map;
 import java.util.Random;
 import java.util.function.Function;
 
-import static FactoryJill.build;
-import static FactoryJill.factory;
+import static FactoryJill.FactoryJill.build;
+import static FactoryJill.FactoryJill.factory;
 
 public class BuildTest {
 

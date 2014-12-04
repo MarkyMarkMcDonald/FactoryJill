@@ -2,8 +2,8 @@ import com.google.common.collect.ImmutableMap;
 import org.junit.Before;
 import org.junit.Test;
 
-import static FactoryJill.build;
-import static FactoryJill.factory;
+import static FactoryJill.FactoryJill.build;
+import static FactoryJill.FactoryJill.factory;
 
 public class AssociationsTest {
 
