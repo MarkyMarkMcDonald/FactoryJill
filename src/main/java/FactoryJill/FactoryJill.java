@@ -1,7 +1,5 @@
 package FactoryJill;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -69,7 +67,7 @@ public class FactoryJill {
         }
     }
 
-    private static <T> Method getMethodByName(T newInstance, String setter) {
+    private static <T> Method getMethodByName(T newInstance, String setter) throws NoSuchMethodException {
         Method[] methods = newInstance.getClass().getMethods();
         Method matchingMethod = null;
         for (Method method : methods) {
@@ -80,7 +78,7 @@ public class FactoryJill {
         if (matchingMethod != null) {
             return matchingMethod;
         } else {
-            throw new NotImplementedException();
+            throw new NoSuchMethodException();
         }
     }
 }
