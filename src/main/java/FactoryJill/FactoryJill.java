@@ -1,6 +1,9 @@
 package FactoryJill;
 
+import org.apache.commons.beanutils.BeanUtils;
+
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
@@ -41,14 +44,18 @@ public class FactoryJill {
         Constructor<?> constructor = clazz.getConstructor();
         T newInstance = (T) constructor.newInstance();
 
-        blueprint.getAttributes().forEach((String property, Object value) -> setProperty(newInstance, property, value));
+        for (Map.Entry<String, Object> entry : blueprint.getAttributes().entrySet()) {
+            setProperty(newInstance, entry.getKey(), entry.getValue());
+        }
 
-        overrides.forEach((String property, Object value) -> setProperty(newInstance, property, value));
+        for (Map.Entry<String, Object> entry : overrides.entrySet()) {
+            setProperty(newInstance, entry.getKey(), entry.getValue());
+        }
 
         return newInstance;
     }
 
-    private static <T> void setProperty(T newInstance, String property, Object potentialValue) {
+    private static <T> void setProperty(T newInstance, String property, Object potentialValue) throws InvocationTargetException, IllegalAccessException {
         Object value;
 
         if (potentialValue instanceof Function) {
@@ -57,14 +64,7 @@ public class FactoryJill {
             value = potentialValue;
         }
 
-        try {
-            String setter = "set" + Character.toUpperCase(property.charAt(0)) + property.substring(1);
-            Method matchingMethod = getMethodByName(newInstance, setter);
-
-            matchingMethod.invoke(newInstance, value);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        BeanUtils.setProperty(newInstance, property, value);
     }
 
     private static <T> Method getMethodByName(T newInstance, String setter) throws NoSuchMethodException {
