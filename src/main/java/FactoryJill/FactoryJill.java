@@ -4,7 +4,6 @@ import org.apache.commons.beanutils.BeanUtils;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -78,21 +77,6 @@ public class FactoryJill {
         } catch (NoSuchMethodException noSuchMethodException) {
             throw new IllegalArgumentException(String.format("Failed to set %s to %s on class %s, check your %s configuration",
                     property, value, newInstance.getClass().getSimpleName(), configurationType), noSuchMethodException);
-        }
-    }
-
-    private static <T> Method getMethodByName(T newInstance, String setter) throws NoSuchMethodException {
-        Method[] methods = newInstance.getClass().getMethods();
-        Method matchingMethod = null;
-        for (Method method : methods) {
-            if (method.getName().equals(setter)) {
-                matchingMethod = method;
-            }
-        }
-        if (matchingMethod != null) {
-            return matchingMethod;
-        } else {
-            throw new NoSuchMethodException();
         }
     }
 }
