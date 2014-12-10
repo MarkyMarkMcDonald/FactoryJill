@@ -88,4 +88,21 @@ public class BuildTest {
 
         factory("frutarom", Car.class, ImmutableMap.of("smokeSmell", "mapleSyrup"));
     }
+
+    @Test
+    public void factory_withIncorrectType() throws Exception {
+        expectedException.expect(IllegalArgumentException.class);
+        expectedException.expectMessage("Failed to set convertible to awwww yeaaah on class Car, expected type Boolean, but got String. Check your factory configuration");
+
+        factory("clown_car", Car.class, ImmutableMap.of("convertible", "awwww yeaaah"));
+    }
+
+    @Test
+    public void build_withIncorrectType() throws Exception {
+        expectedException.expect(IllegalArgumentException.class);
+        expectedException.expectMessage("Failed to set convertible to awwww yeaaah on class Car, expected type Boolean, but got String. Check your override configuration");
+
+        Car build = build("truck", ImmutableMap.of("convertible", "awwww yeaaah"));
+    }
+
 }

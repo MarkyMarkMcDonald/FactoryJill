@@ -68,8 +68,11 @@ public class FactoryJill {
         }
 
         checkProperty(newInstance, property, value, "override");
-
         BeanUtils.setProperty(newInstance, property, value);
+
+        if (BeanUtils.get(newInstance, property) != value) {
+            throw new IllegalArgumentException();
+        }
     }
 
     private static <T> void checkProperty(T newInstance, String property, Object value, String configurationType) throws IllegalAccessException, InvocationTargetException {
