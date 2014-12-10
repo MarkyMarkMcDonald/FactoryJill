@@ -15,6 +15,6 @@ repositories {
 }
 
 dependencies {
-    testCompile('org.MarkyMarkMcDonald:FactoryJill:1.0.0')
+    testCompile('org.MarkyMarkMcDonald:FactoryJill:1.0.1')
 }
 ```
