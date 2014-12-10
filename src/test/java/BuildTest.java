@@ -1,6 +1,8 @@
 import com.google.common.collect.ImmutableMap;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -14,7 +16,7 @@ import static FactoryJill.FactoryJill.factory;
 public class BuildTest {
 
     @Before
-    public void before() {
+    public void before() throws Exception {
         factory("truck", Car.class, ImmutableMap.of(
                 "make", "ford",
                 "convertible", false,
@@ -24,14 +26,14 @@ public class BuildTest {
     }
 
     @Test
-    public void definedFactories_haveConfiguredProperties() throws Exception {
+    public void factory_setsUpReuseableProperties() throws Exception {
         Car pickupTruck = (Car) build("truck");
 
         assert pickupTruck.getMake().equals("ford");
     }
 
     @Test
-    public void overrideDefaults() throws Exception {
+    public void build_allowsOverridenDefaults() throws Exception {
         Car ford = build("truck", ImmutableMap.of("make", "Ford"));
         assert ford.getMake().equals("Ford");
 
@@ -47,7 +49,7 @@ public class BuildTest {
     }
 
     @Test
-    public void dynamicOverrides() throws Exception {
+    public void build_withDynamicOverrides() throws Exception {
         Map<String, Object> dynamicAttributes = new HashMap<>();
 
         Function<Car, String> lambda = (Car car) -> {
@@ -66,5 +68,24 @@ public class BuildTest {
 
         assert randomFord.getMake().equals("Low Rider") || randomFord.getMake().equals("High Rider");
         assert randomFord.getYearsOwned() == 5;
+    }
+
+    @Rule
+    public ExpectedException expectedException = ExpectedException.none();
+
+    @Test
+    public void build_whenOverrideAttributeDoesNotExist() throws Exception {
+        expectedException.expect(IllegalArgumentException.class);
+        expectedException.expectMessage("Failed to set yolokittens to Car{make='Chevy'} on class Car, check your override configuration");
+
+        build("truck", ImmutableMap.of("yolokittens", new Car("Chevy")));
+    }
+
+    @Test
+    public void factory_whenFactoryAttributeDoesNotExist() throws Exception {
+        expectedException.expect(IllegalArgumentException.class);
+        expectedException.expectMessage("Failed to set smokeSmell to mapleSyrup on class Car, check your factory configuration");
+
+        factory("frutarom", Car.class, ImmutableMap.of("smokeSmell", "mapleSyrup"));
     }
 }

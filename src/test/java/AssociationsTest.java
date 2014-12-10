@@ -8,7 +8,7 @@ import static FactoryJill.FactoryJill.factory;
 public class AssociationsTest {
 
     @Before
-    public void before() {
+    public void before() throws Exception {
         factory("oldDriver", Driver.class, ImmutableMap.of("name", "Dale", "age", 25));
 
         factory("youngDriver", Driver.class, ImmutableMap.of("name", "BooBoo", "age", 8));

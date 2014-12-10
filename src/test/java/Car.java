@@ -14,6 +14,20 @@ public class Car {
 
     private Driver driver;
 
+    public Car() {
+    }
+
+    public Car(String make) {
+        this.make = make;
+    }
+
+    @Override
+    public String toString() {
+        return "Car{" +
+                "make='" + make + '\'' +
+                '}';
+    }
+
     public String getMake() {
         return make;
     }
