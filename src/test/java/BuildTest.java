@@ -69,9 +69,17 @@ public class BuildTest {
         assert randomFord.getMake().equals("Low Rider") || randomFord.getMake().equals("High Rider");
         assert randomFord.getYearsOwned() == 5;
     }
-
+    
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
+
+    @Test
+    public void build_whenFactoryIsNotDefined() throws Exception {
+        expectedException.expect(IllegalArgumentException.class);
+        expectedException.expectMessage("There is no factory defined for four_door_sedan.");
+
+        build("four_door_sedan");
+    }
 
     @Test
     public void build_whenOverrideAttributeDoesNotExist() throws Exception {

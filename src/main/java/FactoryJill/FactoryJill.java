@@ -42,6 +42,11 @@ public class FactoryJill {
 
     public static <T> T build(String factoryName, Map<String, Object> overrides) throws Exception {
         Blueprint<T> blueprint = factories.get(factoryName);
+
+        if (blueprint == null) {
+            throw new IllegalArgumentException(String.format("There is no factory defined for %s.", factoryName));
+        }
+
         Class<T> clazz = blueprint.getClazz();
         Constructor<?> constructor = clazz.getConstructor();
         T newInstance = (T) constructor.newInstance();
