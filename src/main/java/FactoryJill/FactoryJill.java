@@ -36,7 +36,7 @@ public class FactoryJill {
         factories.put(alias, blueprint);
     }
 
-    public static Object build(String factoryName) throws Exception {
+    public static <T> T build(String factoryName) throws Exception {
         return build(factoryName, new HashMap<>());
     }
 

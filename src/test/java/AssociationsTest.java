@@ -22,10 +22,10 @@ public class AssociationsTest {
 
     @Test
     public void associations() throws Exception {
-        Car raceCar = (Car) build("truck_with_oldDriver");
+        Car raceCar = build("truck_with_oldDriver");
         assert raceCar.getDriver().getName().equals("Dale");
 
-        Car trike = (Car) build("truck_with_youngDriver");
+        Car trike = build("truck_with_youngDriver");
         assert trike.getDriver().getName().equals("BooBoo");
     }
 }

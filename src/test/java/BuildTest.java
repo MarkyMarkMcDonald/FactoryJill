@@ -27,7 +27,7 @@ public class BuildTest {
 
     @Test
     public void factory_setsUpReuseableProperties() throws Exception {
-        Car pickupTruck = (Car) build("truck");
+        Car pickupTruck = build("truck");
 
         assert pickupTruck.getMake().equals("ford");
     }
