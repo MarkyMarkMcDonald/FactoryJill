@@ -26,14 +26,14 @@ public class BuildTest {
     }
 
     @Test
-    public void factory_setsUpReuseableProperties() throws Exception {
+    public void factory_setsUpReusableProperties() throws Exception {
         Car pickupTruck = build("truck");
 
         assert pickupTruck.getMake().equals("ford");
     }
 
     @Test
-    public void build_allowsOverridenDefaults() throws Exception {
+    public void build_allowsOverriddenDefaults() throws Exception {
         Car ford = build("truck", ImmutableMap.of("make", "Ford"));
         assert ford.getMake().equals("Ford");
 
@@ -52,7 +52,7 @@ public class BuildTest {
     public void build_withDynamicOverrides() throws Exception {
         Map<String, Object> dynamicAttributes = new HashMap<>();
 
-        Function<Car, String> lambda = (Car car) -> {
+        dynamicAttributes.put("make", (Function<Car, String>) (Car car) -> {
             Random random = new Random();
             Double decision = random.nextDouble();
             if (decision > .5) {
@@ -60,9 +60,7 @@ public class BuildTest {
             } else {
                 return "High Rider";
             }
-        };
-
-        dynamicAttributes.put("make", lambda);
+        });
 
         Car randomFord = build("truck", dynamicAttributes);
 
