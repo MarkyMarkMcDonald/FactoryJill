@@ -7,6 +7,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 @SuppressWarnings("unchecked")
@@ -60,6 +61,13 @@ public class FactoryJill {
         }
 
         return newInstance;
+    }
+
+    public static <T> T build(String alias, Consumer<FactorySettings> settingsBlock) throws Exception {
+        FactorySettings settings = new FactorySettings();
+        settingsBlock.accept(settings);
+
+        return null;
     }
 
     private static <T> void setProperty(T newInstance, String property, Object potentialValue) throws InvocationTargetException, IllegalAccessException, NoSuchMethodException {
