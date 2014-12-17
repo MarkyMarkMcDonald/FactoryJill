@@ -52,9 +52,7 @@ Here's a sample build.gradle file:
 apply plugin: 'java'
 
 repositories {
-    maven {
-        url 'https://oss.sonatype.org/content/repositories/releases'
-    }
+    mavenCentral()
 }
 
 sourceCompatibility = 1.8
