@@ -56,9 +56,8 @@ repositories {
 }
 
 sourceCompatibility = 1.8
-version = '0.0.1'
 
 dependencies {
-    compile('com.github.markymarkmcdonald:FactoryJill:1.0.3')
+    testCompile('com.github.markymarkmcdonald:FactoryJill:1.0.3')
 }
 ```
