@@ -14,11 +14,11 @@ Supported:
 - Defining reusable factories
 - Overriding fields
 - Associations: Defining fields as instances of other factories
+- Building a list of factories
 
 Not Supported:
 - Aliases
 - Sequences
-- Building a list of factories
 
 Not Planned to be supported:
 - Factory Inheritance
