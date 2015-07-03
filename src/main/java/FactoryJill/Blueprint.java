@@ -8,9 +8,6 @@ public class Blueprint<T> {
 
     private Class<T> clazz;
 
-    public Blueprint() {
-    }
-
     public Blueprint(Class<T> clazz, Map<String, Object> attributes) {
         this.attributes = attributes;
         this.clazz = clazz;
