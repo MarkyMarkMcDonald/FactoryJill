@@ -1,12 +1,20 @@
 FactoryJill
 ===========
 
+## Usage
+```gradle
+sourceCompatibility = 1.8
+dependencies {
+    testCompile('com.github.markymarkmcdonald:FactoryJill:1.0.3')
+}
+```
+
 ## Features
 Supported:
 - Defining reusable factories
 - Overriding fields
 - Lazily setting fields
-- Defining fields as instances of other factories (associations)
+- Associations: Defining fields as instances of other factories
 
 Not Supported:
 - Inheritance
@@ -43,21 +51,6 @@ Car convertible = build("truck", ImmutableMap.of("convertible", true));
 assert convertible.getConvertible().equals(true);
 ```
 
-## Full Documentation
-For now the test directory is a good place to start
-
-## Usage
-Here's a sample build.gradle file:
-```gradle
-apply plugin: 'java'
-
-repositories {
-    mavenCentral()
-}
-
-sourceCompatibility = 1.8
-
-dependencies {
-    testCompile('com.github.markymarkmcdonald:FactoryJill:1.0.3')
-}
-```
+## Full API
+For now FactoryJill provides a public interface with two methods, `FactoryJill.factory` and `FactoryJill.build`.
+Check out the test directory for a complete set of usage examples.
