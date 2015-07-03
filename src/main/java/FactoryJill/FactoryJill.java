@@ -6,7 +6,9 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @SuppressWarnings("unchecked")
 public class FactoryJill {
@@ -17,19 +19,17 @@ public class FactoryJill {
         factory(alias, clazz, attributes, Collections.EMPTY_MAP);
     }
 
-    public static <T> void factory(String alias, Class<T> clazz,
-                                   Map<String, Object> attributes, Map<String, String> associations) throws Exception {
-        Map<String, Object> mutableAttributes = new HashMap<>(attributes);
+    public static <T> void factory(String alias, Class<T> clazz, Map<String, Object> attributes, Map<String, String> associations) throws Exception {
+        Map<String, Object> derivedAttributes = flattenAssociations(attributes, associations);
 
-        for (Map.Entry<String, String> entry : associations.entrySet()) {
-            mutableAttributes.put(entry.getKey(), build(entry.getValue()));
-        }
-
-        Blueprint blueprint = new Blueprint(clazz, mutableAttributes);
+        Blueprint blueprint = new Blueprint(clazz, derivedAttributes);
 
         T newInstance = clazz.getConstructor().newInstance();
-        for (Map.Entry<String, Object> attribute : mutableAttributes.entrySet()) {
-            checkProperty(newInstance, attribute.getKey(), attribute.getValue(), "factory");
+        for (Map.Entry<String, Object> attribute : derivedAttributes.entrySet()) {
+            if (propertyMissing(newInstance, attribute.getKey())) {
+                throw new IllegalArgumentException(String.format("Failed to define factory \"%s\", could not set \"%s\" to \"%s\" on class \"%s\".",
+                        alias, attribute.getKey(), attribute.getValue(), newInstance.getClass().getSimpleName()));
+            }
         }
 
         factories.put(alias, blueprint);
@@ -43,35 +43,58 @@ public class FactoryJill {
         Blueprint<T> blueprint = factories.get(factoryName);
 
         if (blueprint == null) {
-            throw new IllegalArgumentException(String.format("There is no factory defined for %s.", factoryName));
+            throw new IllegalArgumentException(String.format("No \"%s\" factory has been defined. Defined factories: %s.", factoryName, getDefinedFactoryNames()));
         }
 
         Class<T> clazz = blueprint.getClazz();
         Constructor<?> constructor = clazz.getConstructor();
         T newInstance = (T) constructor.newInstance();
 
-        for (Map.Entry<String, Object> entry : blueprint.getAttributes().entrySet()) {
-            setProperty(newInstance, entry.getKey(), entry.getValue());
+        for (Map.Entry<String, Object> defaultField : blueprint.getAttributes().entrySet()) {
+            if (propertyMissing(newInstance, defaultField.getKey())) {
+                throw new IllegalArgumentException(getBuildFailureMessage(factoryName, newInstance, defaultField));
+            }
+            BeanUtils.setProperty(newInstance, defaultField.getKey(), defaultField.getValue());
         }
 
-        for (Map.Entry<String, Object> entry : overrides.entrySet()) {
-            setProperty(newInstance, entry.getKey(), entry.getValue());
+        for (Map.Entry<String, Object> override : overrides.entrySet()) {
+            if (propertyMissing(newInstance, override.getKey())) {
+                throw new IllegalArgumentException(getOverrideErrorMessage(factoryName, newInstance, override));
+            }
+            BeanUtils.setProperty(newInstance, override.getKey(), override.getValue());
         }
 
         return newInstance;
     }
 
-    private static <T> void setProperty(T newInstance, String property, Object value) throws InvocationTargetException, IllegalAccessException, NoSuchMethodException {
-        checkProperty(newInstance, property, value, "override");
-        BeanUtils.setProperty(newInstance, property, value);
+    private static Map<String, Object> flattenAssociations(Map<String, Object> attributes, Map<String, String> associations) throws Exception {
+        Map<String, Object> mutableAttributes = new HashMap<>(attributes);
+        for (Map.Entry<String, String> entry : associations.entrySet()) {
+            mutableAttributes.put(entry.getKey(), build(entry.getValue()));
+        }
+        return mutableAttributes;
     }
 
-    private static <T> void checkProperty(T newInstance, String property, Object value, String configurationType) throws IllegalAccessException, InvocationTargetException {
+    private static <T> String getBuildFailureMessage(String factoryName, T newInstance, Map.Entry<String, Object> entry) {
+        return String.format("Failed to build \"%s\", could not set \"%s\" to \"%s\" on class \"%s\".",
+                            factoryName, entry.getKey(), entry.getValue(), newInstance.getClass().getSimpleName());
+    }
+
+    private static <T> String getOverrideErrorMessage(String factoryName, T newInstance, Map.Entry<String, Object> entry) {
+        return String.format("Failed to build \"%s\", could not override \"%s\" to \"%s\" on class \"%s\".",
+                            factoryName, entry.getKey(), entry.getValue(), newInstance.getClass().getSimpleName());
+    }
+
+    private static List<String> getDefinedFactoryNames() {
+        return factories.keySet().stream().sorted().collect(Collectors.toList());
+    }
+
+    private static <T> boolean propertyMissing(T newInstance, String property) throws IllegalAccessException, InvocationTargetException {
         try {
             BeanUtils.getProperty(newInstance, property);
+            return false;
         } catch (NoSuchMethodException noSuchMethodException) {
-            throw new IllegalArgumentException(String.format("Failed to set %s to %s on class %s, check your %s configuration",
-                    property, value, newInstance.getClass().getSimpleName(), configurationType), noSuchMethodException);
+            return true;
         }
     }
 }

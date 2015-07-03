@@ -4,6 +4,13 @@ public class Driver {
 
     private Integer age;
 
+    @Override
+    public String toString() {
+        return "Driver{" +
+                "name='" + name + '\'' +
+                '}';
+    }
+
     public String getName() {
         return name;
     }

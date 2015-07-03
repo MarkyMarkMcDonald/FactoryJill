@@ -34,8 +34,8 @@ public class FactoryTest {
     @Test
     public void factory_whenFactoryAttributeDoesNotExist() throws Exception {
         expectedException.expect(IllegalArgumentException.class);
-        expectedException.expectMessage("Failed to set smokeSmell to mapleSyrup on class Car, check your factory configuration");
+        expectedException.expectMessage("Failed to define factory \"dirtyFrutaromCar\", could not set \"smokeSmell\" to \"mapleSyrup\" on class \"Car\"");
 
-        factory("frutarom", Car.class, ImmutableMap.of("smokeSmell", "mapleSyrup"));
+        factory("dirtyFrutaromCar", Car.class, ImmutableMap.of("smokeSmell", "mapleSyrup"));
     }
 }

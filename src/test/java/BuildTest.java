@@ -8,6 +8,8 @@ import java.util.Date;
 
 import static FactoryJill.FactoryJill.build;
 import static FactoryJill.FactoryJill.factory;
+import static java.util.Collections.emptyMap;
+import static org.hamcrest.CoreMatchers.containsString;
 
 public class BuildTest {
 
@@ -42,8 +44,12 @@ public class BuildTest {
 
     @Test
     public void build_whenFactoryIsNotDefined() throws Exception {
+        factory("edwards", Driver.class, emptyMap());
+
         expectedException.expect(IllegalArgumentException.class);
-        expectedException.expectMessage("There is no factory defined for four_door_sedan.");
+        expectedException.expectMessage(containsString("No \"four_door_sedan\" factory has been defined. Defined factories: ["));
+        expectedException.expectMessage(containsString("edwards"));
+        expectedException.expectMessage(containsString("truck"));
 
         build("four_door_sedan");
     }
@@ -51,8 +57,10 @@ public class BuildTest {
     @Test
     public void build_whenOverrideAttributeDoesNotExist() throws Exception {
         expectedException.expect(IllegalArgumentException.class);
-        expectedException.expectMessage("Failed to set yolokittens to Car{make='Chevy'} on class Car, check your override configuration");
+        expectedException.expectMessage("Failed to build \"truck\", could not override \"yolokittens\" to \"Driver{name='Edwards'}\" on class \"Car\".");
 
-        build("truck", ImmutableMap.of("yolokittens", new Car("Chevy")));
+        Driver driver = new Driver();
+        driver.setName("Edwards");
+        build("truck", ImmutableMap.of("yolokittens", driver));
     }
 }
