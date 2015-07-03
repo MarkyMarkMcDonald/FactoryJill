@@ -7,7 +7,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Function;
 
 @SuppressWarnings("unchecked")
 public class FactoryJill {
@@ -62,17 +61,8 @@ public class FactoryJill {
         return newInstance;
     }
 
-    private static <T> void setProperty(T newInstance, String property, Object potentialValue) throws InvocationTargetException, IllegalAccessException, NoSuchMethodException {
-        Object value;
-
-        if (potentialValue instanceof Function) {
-            value = ((Function) potentialValue).apply(newInstance);
-        } else {
-            value = potentialValue;
-        }
-
+    private static <T> void setProperty(T newInstance, String property, Object value) throws InvocationTargetException, IllegalAccessException, NoSuchMethodException {
         checkProperty(newInstance, property, value, "override");
-
         BeanUtils.setProperty(newInstance, property, value);
     }
 

@@ -13,23 +13,24 @@ dependencies {
 Supported:
 - Defining reusable factories
 - Overriding fields
-- Lazily setting fields
 - Associations: Defining fields as instances of other factories
 
 Not Supported:
-- Inheritance
 - Aliases
 - Sequences
 - Building a list of factories
+
+Not Planned to be supported:
+- Factory Inheritance
+- Lazily setting fields (based off of other properties)
 - Callbacks (pre-build, post-build)
 
 ## Requirements
-- Java 8 (for lazily setting attributes)
+- Java 8
 - A public getter and setter for each field defined or overridden.
 
 ## Examples
-Defining a factory
-
+Defining a factory:
 ```java
 factory("truck", Car.class, ImmutableMap.of(
                 "make", "ford",
@@ -39,13 +40,13 @@ factory("truck", Car.class, ImmutableMap.of(
         ));
 ```
 
-Building an instance from a factory
+Building an instance from a factory:
 ```java
 Car pickupTruck = build("truck");
 assert pickupTruck.getMake().equals("ford");
 ```
 
-Sometimes you need to override specific properties
+Sometimes you need to override specific properties:
 ```java
 Car convertible = build("truck", ImmutableMap.of("convertible", true));
 assert convertible.getConvertible().equals(true);

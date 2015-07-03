@@ -5,10 +5,6 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
-import java.util.function.Function;
 
 import static FactoryJill.FactoryJill.build;
 import static FactoryJill.FactoryJill.factory;
@@ -26,13 +22,6 @@ public class BuildTest {
     }
 
     @Test
-    public void factory_setsUpReusableProperties() throws Exception {
-        Car pickupTruck = build("truck");
-
-        assert pickupTruck.getMake().equals("ford");
-    }
-
-    @Test
     public void build_allowsOverriddenDefaults() throws Exception {
         Car ford = build("truck", ImmutableMap.of("make", "Ford"));
         assert ford.getMake().equals("Ford");
@@ -46,26 +35,6 @@ public class BuildTest {
         Date now = new Date();
         Car rightOffTheShelf = build("truck", ImmutableMap.of("releaseDate", now));
         assert rightOffTheShelf.getReleaseDate().equals(now);
-    }
-
-    @Test
-    public void build_withDynamicOverrides() throws Exception {
-        Map<String, Object> dynamicAttributes = new HashMap<>();
-
-        dynamicAttributes.put("make", (Function<Car, String>) (Car car) -> {
-            Random random = new Random();
-            Double decision = random.nextDouble();
-            if (decision > .5) {
-                return "Low Rider";
-            } else {
-                return "High Rider";
-            }
-        });
-
-        Car randomFord = build("truck", dynamicAttributes);
-
-        assert randomFord.getMake().equals("Low Rider") || randomFord.getMake().equals("High Rider");
-        assert randomFord.getYearsOwned() == 5;
     }
 
     @Rule
@@ -85,13 +54,5 @@ public class BuildTest {
         expectedException.expectMessage("Failed to set yolokittens to Car{make='Chevy'} on class Car, check your override configuration");
 
         build("truck", ImmutableMap.of("yolokittens", new Car("Chevy")));
-    }
-
-    @Test
-    public void factory_whenFactoryAttributeDoesNotExist() throws Exception {
-        expectedException.expect(IllegalArgumentException.class);
-        expectedException.expectMessage("Failed to set smokeSmell to mapleSyrup on class Car, check your factory configuration");
-
-        factory("frutarom", Car.class, ImmutableMap.of("smokeSmell", "mapleSyrup"));
     }
 }
