@@ -43,15 +43,18 @@ factory("truck", Car.class, ImmutableMap.of(
 Building an instance from a factory:
 ```java
 Car pickupTruck = build("truck");
-assert pickupTruck.getMake().equals("ford");
 ```
 
 Sometimes you need to override specific properties:
 ```java
 Car convertible = build("truck", ImmutableMap.of("convertible", true));
-assert convertible.getConvertible().equals(true);
+```
+
+Building multiple instances from a factoy:
+```java
+List<Car> pickupTrucks = buildMultiple("truck", 5);
 ```
 
 ## Full API
-For now FactoryJill provides a public interface with two methods, `FactoryJill.factory` and `FactoryJill.build`.
+For now FactoryJill provides a public interface with three methods, `FactoryJill.factory`, `FactoryJill.build`, and `FactoryJill.buildMultiple`.
 Check out the test directory for a complete set of usage examples.
