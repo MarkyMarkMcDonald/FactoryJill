@@ -1,3 +1,4 @@
+import FactoryJill.FactoryJill;
 import com.google.common.collect.ImmutableMap;
 import org.junit.Before;
 import org.junit.Rule;
@@ -5,6 +6,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import java.util.Date;
+import java.util.List;
 
 import static FactoryJill.FactoryJill.build;
 import static FactoryJill.FactoryJill.factory;
@@ -21,6 +23,17 @@ public class BuildTest {
                 "yearsOwned", 5,
                 "releaseDate", new Date()
         ));
+    }
+
+    @Test
+    public void buildMultiple() throws Exception {
+        List<Car> cars = FactoryJill.buildMultiple("truck");
+        assert cars.size() > 0;
+        assert cars.get(0).getMake().equals("ford");
+        assert cars.get(1).getMake().equals("ford");
+
+        List<Car> lotsOfCars = FactoryJill.buildMultiple("truck", 20);
+        assert lotsOfCars.size() == 20;
     }
 
     @Test
