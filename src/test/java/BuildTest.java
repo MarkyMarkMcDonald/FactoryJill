@@ -21,7 +21,7 @@ public class BuildTest {
                 "make", "ford",
                 "convertible", false,
                 "yearsOwned", 5,
-                "year", new Date()
+                "releaseDate", new Date()
         ));
     }
 
@@ -44,8 +44,8 @@ public class BuildTest {
         assert wellLookedAfter.getYearsOwned() == 13;
 
         Date now = new Date();
-        Car rightOffTheShelf = build("truck", ImmutableMap.of("year", now));
-        assert rightOffTheShelf.getYear().equals(now);
+        Car rightOffTheShelf = build("truck", ImmutableMap.of("releaseDate", now));
+        assert rightOffTheShelf.getReleaseDate().equals(now);
     }
 
     @Test
@@ -67,7 +67,7 @@ public class BuildTest {
         assert randomFord.getMake().equals("Low Rider") || randomFord.getMake().equals("High Rider");
         assert randomFord.getYearsOwned() == 5;
     }
-    
+
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
 

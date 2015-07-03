@@ -35,7 +35,7 @@ factory("truck", Car.class, ImmutableMap.of(
                 "make", "ford",
                 "convertible", false,
                 "yearsOwned", 5,
-                "year", new Date()
+                "releaseDate", new Date()
         ));
 ```
 

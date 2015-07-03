@@ -10,7 +10,7 @@ public class Car {
 
     private int yearsOwned;
 
-    private Date year;
+    private Date releaseDate;
 
     private Driver driver;
 
@@ -44,12 +44,12 @@ public class Car {
         this.model = model;
     }
 
-    public Date getYear() {
-        return year;
+    public Date getReleaseDate() {
+        return releaseDate;
     }
 
-    public void setYear(Date year) {
-        this.year = year;
+    public void setReleaseDate(Date releaseDate) {
+        this.releaseDate = releaseDate;
     }
 
     public Boolean getConvertible() {
