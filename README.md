@@ -5,7 +5,7 @@ FactoryJill
 ```gradle
 sourceCompatibility = 1.8
 dependencies {
-    testCompile('com.github.markymarkmcdonald:FactoryJill:1.0.3')
+    testCompile('com.github.markymarkmcdonald:FactoryJill:2.0.0')
 }
 ```
 
